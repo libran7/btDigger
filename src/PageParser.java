@@ -12,7 +12,7 @@ class PageParser {
     private ConfigLoader configLoader = ConfigLoader.getInstance();
     private static ArrayList<String> targetCategoriesSubURLs = new ArrayList<>();
     private static ArrayList<String> validFilmTitles = new ArrayList<>();
-    private static ArrayList<String> validFileSubURLs = new ArrayList<>();
+    private static ArrayList<String> validFilmSubURLs = new ArrayList<>();
     PageParser() {
         System.out.print("[o] Connecting...");
         try {
@@ -68,7 +68,7 @@ class PageParser {
                         if (!isBanned && !isDuplicated) {
 //                            System.out.println(eachFilmTitle.select("font").text());
                             validFilmTitles.add(eachFilmTitle.select("font").text());
-                            validFileSubURLs.add(eachFilmTitle.select("a").first().attr("href"));
+                            validFilmSubURLs.add(eachFilmTitle.select("a").first().attr("href"));
                         }
                     }
                 }
@@ -81,6 +81,10 @@ class PageParser {
         System.out.println("OK");
         System.out.println("[o] \t"+counterBanned+" films banned");
         System.out.println("[o] \t"+counterDuplicated+" films dropped due to duplication");
+        parseFilmPage();
     }
 
+    void parseFilmPage() {
+
+    }
 }
