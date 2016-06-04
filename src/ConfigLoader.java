@@ -9,6 +9,7 @@ class ConfigLoader {
     private static ArrayList<String> regions_banned = new ArrayList<>();
     private static ArrayList<String> categories    = new ArrayList<>();
     private static int depth;
+    private static String definition;
 
     private ConfigLoader() {
         String jsonString = extractJSON();
@@ -20,6 +21,7 @@ class ConfigLoader {
         for (Object each : categories_array)
             categories.add((String) each);
         depth = Integer.parseInt(jsonObject.getString("depth"));
+        definition = jsonObject.getString("definition");
     }
 
     static synchronized ConfigLoader getInstance() {
@@ -40,6 +42,10 @@ class ConfigLoader {
         return depth;
     }
 
+    String getDefinition() {
+        return definition;
+    }
+
     private String extractJSON() {
         File file = new File(FILE_NAME);
         String jsonString = "";
@@ -52,7 +58,7 @@ class ConfigLoader {
             System.out.println("\n[x] Configuration file not found");
             System.exit(0);
         } catch (IOException e) {
-            System.out.println("\n[x] An error occurred while reading the configuration file");
+            System.out.println("\n[x] An error occurred when trying to read the configuration file");
             System.exit(0);
         }
         return jsonString;
