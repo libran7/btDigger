@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<entry>
+	<region-banned>
+		中国大陆<i/>
+	</region-banned>
+	<depth>2</depth>
+	<catagories>
+		动作<i/>
+		战争<i/>
+		科幻<i/>
+		悬疑<i/>
+		犯罪<i/>
+		恐怖<i/>
+		惊悚<i/>
+		冒险<i/>
+	</catagories>
+</entry>
