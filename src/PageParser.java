@@ -52,40 +52,52 @@ class PageParser {
 
     void parseCategoryPage() {
         System.out.println("[o] You are banning films from "+configLoader.getRegions_banned().toString());
+        System.out.println("[o] You want to dig into each category with the depth of: "+configLoader.getDepth());
+        if (configLoader.getDepth() < 1) {
+            System.out.println("[x] Depth can not be smaller than 1");
+            System.exit(0);
+        }
+        else if (configLoader.getDepth() > 5) {
+            System.out.println("[i] Depth may be too large");
+        }
         System.out.print("[o] Collecting films into each category...");
         int counterDuplicated = 0;
         int counterBanned = 0;
+        boolean isBanned;
+        boolean isDuplicated;
         for (String each : targetCategoriesSubURLs) {
-            try {
-                URL url = new URL(HOST+each);
-                Document document = Jsoup.parse(url, 5000);
-                Elements filmTitles = document.select("div[class=\"title\"]");
-                for (Element eachFilmTitle : filmTitles) {
-                    if (!"".equals(eachFilmTitle.select("font").text())) {
-                        boolean isBanned = false;
-                        boolean isDuplicated = false;
-                        for (String eachBannedLocation : configLoader.getRegions_banned()) {
-                            if (eachFilmTitle.select("p[class=\"des\"]").text().contains(eachBannedLocation)) {
-                                counterBanned++;
-                                isBanned = true;
+            for (int i = 1; i < configLoader.getDepth() + 1; i++) {
+                try {
+                    URL url = new URL(HOST + each + i);
+                    Document document = Jsoup.parse(url, 5000);
+                    Elements filmTitles = document.select("div[class=\"title\"]");
+                    for (Element eachFilmTitle : filmTitles) {
+                        if (!"".equals(eachFilmTitle.select("font").text())) {
+                            isBanned = false;
+                            isDuplicated = false;
+                            for (String eachBannedLocation : configLoader.getRegions_banned()) {
+                                if (eachFilmTitle.select("p[class=\"des\"]").text().contains(eachBannedLocation)) {
+                                    counterBanned++;
+                                    isBanned = true;
+                                }
                             }
-                        }
-                        for (String eachValidFileTitle : validFilmTitles) {
-                            if (eachFilmTitle.select("font").text().contains(eachValidFileTitle)) {
-                                counterDuplicated++;
-                                isDuplicated = true;
+                            for (String eachValidFileTitle : validFilmTitles) {
+                                if (eachFilmTitle.select("font").text().contains(eachValidFileTitle)) {
+                                    counterDuplicated++;
+                                    isDuplicated = true;
+                                }
                             }
-                        }
-                        if (!isBanned && !isDuplicated) {
-                            validFilmTitles.add(eachFilmTitle.select("font").text());
-                            validFilmSubURLs.add(eachFilmTitle.select("a").first().attr("href"));
+                            if (!isBanned && !isDuplicated) {
+                                validFilmTitles.add(eachFilmTitle.select("font").text());
+                                validFilmSubURLs.add(eachFilmTitle.select("a").first().attr("href"));
+                            }
                         }
                     }
+                } catch (MalformedURLException e) {
+                    System.out.println("\n[x] Internal error: MalformedURL");
+                } catch (IOException e) {
+                    System.out.println("\n[x] An error occurred when trying to read the page");
                 }
-            } catch (MalformedURLException e) {
-                System.out.println("\n[x] Internal error: MalformedURL");
-            } catch (IOException e) {
-                System.out.println("\n[x] An error occurred when trying to read the page");
             }
         }
         System.out.println("OK");
@@ -96,7 +108,7 @@ class PageParser {
 
     void parseFilmPage() {
         System.out.println("[o] You are using favourite definition: "+configLoader.getDefinition());
-        int i=1;
+        int i = 1;
         for (String each : validFilmSubURLs) {
             try {
                 String targetBtFileLinkSuffix = null;
