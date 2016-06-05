@@ -51,7 +51,9 @@ class ConfigLoader {
         String jsonString = "";
         String temp;
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            BufferedReader bufferedReader = new BufferedReader(
+                                            new InputStreamReader(
+                                            new FileInputStream(file), "UTF-8"));
             while ((temp = bufferedReader.readLine()) != null)
                 jsonString+=temp;
         } catch (FileNotFoundException e) {
